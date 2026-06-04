@@ -1,3 +1,4 @@
+alert("JS is working!");
 // بخش ابتدایی اصلاح شده برای جلوگیری از کرش کردن برنامه
 document.addEventListener('DOMContentLoaded', () => {
     console.log("App Initialized...");
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // مثال اصلاح شده برای Fetch (این مدل را برای همه fetchها رعایت کن)
 async function loadLibraryData() {
     try {
-        const response = await fetch('assets/Study/Books/book_list.json');
+        const response = await fetch('./assets/Study/Books/book_list.json');
         if (!response.ok) throw new Error('فایل پیدا نشد');
         const data = await response.json();
         // ادامه کد رندر...
