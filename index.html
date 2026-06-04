@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Study Planner</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="icons/favicon.ico" type="image/x-icon">
+    <!-- آیکون‌های اپل و اندروید -->
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dental Planner">
+    <meta name="theme-color" content="#000000">
+</head>
+<body>
+    <header>
+        <div class="logo">Dental Planner</div>
+        <nav>
+            <ul>
+                <li><a href="#dashboard">داشبورد</a></li>
+                <li><a href="#library">کتابخانه</a></li>
+                <li><a href="#planner">پلنر</a></li>
+                <li><a href="#cases">کیس‌ها</a></li>
+                <li><a href="#fea">FEA</a></li>
+                <li><a href="#settings">تنظیمات</a></li>
+            </ul>
+        </nav>
+        <button id="theme-toggle">🌙</button>
+    </header>
+
+    <main>
+        <section id="dashboard">
+            <h2>داشبورد</h2>
+            <div class="dashboard-widgets">
+                <div class="widget streak">
+                    <h3>Streak 🔥</h3>
+                    <p id="streak-count">0</p>
+                    <p>روز متوالی مطالعه</p>
+                </div>
+                <div class="widget progress">
+                    <h3>پیشرفت کلی 🚀</h3>
+                    <div class="progress-bar-container">
+                        <div id="overall-progress-bar" class="progress-bar"></div>
+                    </div>
+                    <p id="overall-progress-text">0%</p>
+                </div>
+                <div class="widget upcoming">
+                    <h3>جلسه بعدی 📅</h3>
+                    <p id="next-study-session">هنوز جلسه‌ای برنامه‌ریزی نشده</p>
+                </div>
+                <div class="widget quick-actions">
+                    <h3>اقدامات سریع ⚡</h3>
+                    <button onclick="openModal('add-note-modal')">یادداشت جدید</button>
+                    <button onclick="openModal('add-case-modal')">کیس بالینی جدید</button>
+                    <button onclick="openModal('add-article-modal')">مقاله جدید</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="library">
+            <h2>کتابخانه 📚</h2>
+            <div class="library-tabs">
+                <button class="active" data-tab="books">کتاب‌ها</button>
+                <button data-tab="articles">مقالات</button>
+                <button data-tab="core-concepts">مفاهیم</button>
+                <button data-tab="fea">FEA</button>
+                <button data-tab="design-lab">آزمایشگاه طراحی</button>
+            </div>
+            <div id="library-content">
+                <!-- محتوای کتاب‌ها، مقالات و ... اینجا بارگذاری می‌شود -->
+                <div id="books-section" class="tab-content active">
+                    <h3>کتاب‌ها</h3>
+                    <div id="books-list">
+                        <!-- لیست کتاب‌ها از فایل assets/Study/Books/book_list.json بارگذاری می‌شود -->
+                    </div>
+                </div>
+                <div id="articles-section" class="tab-content">
+                    <h3>مقالات</h3>
+                    <div id="articles-list">
+                        <!-- لیست مقالات از فایل assets/Articles/article_index.json بارگذاری می‌شود -->
+                    </div>
+                </div>
+                <div id="core-concepts-section" class="tab-content">
+                    <h3>مفاهیم کلیدی</h3>
+                    <div id="core-concepts-list">
+                        <!-- لیست مفاهیم از assets/Study/Core Concepts/ بارگذاری می‌شود -->
+                    </div>
+                </div>
+                 <div id="fea-section" class="tab-content">
+                    <h3>تحلیل المان محدود (FEA)</h3>
+                    <div id="fea-list">
+                        <!-- لیست مفاهیم FEA از assets/FEA/ بارگذاری می‌شود -->
+                    </div>
+                </div>
+                <div id="design-lab-section" class="tab-content">
+                    <h3>آزمایشگاه طراحی</h3>
+                    <div id="design-lab-list">
+                         <!-- لیست ایده‌های طراحی از assets/Design Lab/ بارگذاری می‌شود -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="planner">
+            <h2>پلنر مطالعه 🗓️</h2>
+             <div class="planner-controls">
+                <label for="week-select">هفته:</label>
+                <select id="week-select"></select>
+                <button onclick="prevWeek()">هفته قبل</button>
+                <button onclick="nextWeek()">هفته بعد</button>
+                <button onclick="openModal('add-session-modal')">افزودن جلسه</button>
+             </div>
+            <div id="weekly-schedule">
+                <!-- برنامه هفتگی اینجا نمایش داده می‌شود -->
+                <div class="day-column">
+                    <h4>شنبه</h4>
+                    <div class="session-list" data-day="شنبه"></div>
+                </div>
+                <div class="day-column">
+                    <h4>یکشنبه</h4>
+                    <div class="session-list" data-day="یکشنبه"></div>
+                </div>
+                <div class="day-column">
+                    <h4>دوشنبه</h4>
+                    <div class="session-list" data-day="دوشنبه"></div>
+                </div>
+                <div class="day-column">
+                    <h4>سه‌شنبه</h4>
+                    <div class="session-list" data-day="سه‌شنبه"></div>
+                </div>
+                <div class="day-column">
+                    <h4>چهارشنبه</h4>
+                    <div class="session-list" data-day="چهارشنبه"></div>
+                </div>
+                <div class="day-column">
+                    <h4>پنجشنبه</h4>
+                    <div class="session-list" data-day="پنجشنبه"></div>
+                </div>
+                <div class="day-column">
+                    <h4>جمعه</h4>
+                    <div class="session-list" data-day="جمعه"></div>
+                </div>
+            </div>
+            <div id="study-log">
+                <h3>گزارش مطالعه امروز 📝</h3>
+                <ul id="today-log-list">
+                    <!-- جلسات مطالعه ثبت شده امروز اینجا نمایش داده می‌شود -->
+                </ul>
+            </div>
+        </section>
+
+        <section id="cases">
+            <h2>کیس‌های بالینی 🩺</h2>
+            <button onclick="openModal('add-case-modal')" class="add-new-btn">افزودن کیس جدید</button>
+            <div id="case-library">
+                <!-- لیست کیس‌های بالینی اینجا نمایش داده می‌شود -->
+            </div>
+        </section>
+
+        <section id="settings">
+            <h2>تنظیمات ⚙️</h2>
+            <div>
+                <label for="language-select">زبان:</label>
+                <select id="language-select">
+                    <option value="fa">فارسی</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            <div>
+                <label for="theme-select">حالت نمایش:</label>
+                <select id="theme-select">
+                    <option value="dark">تیره (پیش‌فرض)</option>
+                    <option value="light">روشن</option>
+                </select>
+            </div>
+             <div>
+                <label for="data-backup-select">پشتیبان‌گیری/بازیابی:</label>
+                <button onclick="backupData()">پشتیبان‌گیری</button>
+                <input type="file" id="data-restore-input" accept=".json" style="display: none;" onchange="restoreData(event)">
+                <button onclick="document.getElementById('data-restore-input').click()">بازیابی</button>
+            </div>
+            <p>نسخه اپلیکیشن: 1.0.0</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Dental Planner App. All rights reserved.</p>
+    </footer>
+
+    <!-- Modals -->
+    <div id="note-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('note-modal')">&times;</span>
+            <h3>یادداشت جدید</h3>
+            <textarea id="note-text" placeholder="یادداشت خود را اینجا بنویسید..."></textarea>
+            <button onclick="saveNote()">ذخیره یادداشت</button>
+        </div>
+    </div>
+
+     <div id="add-session-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('add-session-modal')">&times;</span>
+            <h3>افزودن جلسه مطالعه</h3>
+            <label for="session-date">تاریخ:</label>
+            <input type="date" id="session-date">
+            <label for="session-time">زمان شروع:</label>
+            <input type="time" id="session-time">
+            <label for="session-duration">مدت زمان (دقیقه):</label>
+            <input type="number" id="session-duration" min="10" max="180" placeholder="مثلا: 30">
+             <label for="session-topic">موضوع/هدف:</label>
+            <input type="text" id="session-topic" placeholder="مثلا: خواندن فصل 2 Shillingburg">
+            <label for="session-resource">منبع (اختیاری):</label>
+            <input type="text" id="session-resource" placeholder="مثلا: Shillingburg, Chapter 2">
+            <button onclick="addStudySession()">افزودن جلسه</button>
+        </div>
+    </div>
+
+    <div id="add-case-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('add-case-modal')">&times;</span>
+            <h3>کیس بالینی جدید</h3>
+            <input type="text" id="case-title" placeholder="عنوان کیس (مثلا: درمان روکش دندان 25)">
+            <input type="text" id="case-patient-code" placeholder="کد بیمار (اختیاری)">
+            <input type="date" id="case-date">
+            <select id="case-type">
+                <option value="fixed-prostho">پروتز ثابت</option>
+                <option value="implant-prostho">پروتز ایمپلنت</option>
+                <option value="tmd-occlusion">TMD/اکلوژن</option>
+                <option value="other">سایر</option>
+            </select>
+            <textarea id="case-problem" placeholder="مشکل بیمار (Problem)"></textarea>
+            <textarea id="case-findings" placeholder="یافته‌های بالینی (Clinical Findings)"></textarea>
+            <textarea id="case-diagnosis" placeholder="تشخیص (Diagnosis)"></textarea>
+            <textarea id="case-treatment-plan" placeholder="طرح درمان (Treatment Plan)"></textarea>
+            <textarea id="case-outcome" placeholder="نتیجه درمان (Outcome)"></textarea>
+            <div class="image-upload-section">
+                <p>تصاویر (اختیاری):</p>
+                <input type="file" id="case-images" accept="image/*" multiple>
+                <div id="case-image-preview"></div>
+            </div>
+             <div class="sketchpad-container">
+                <p>طراحی (Sketchpad):</p>
+                <canvas id="case-sketchpad"></canvas>
+                <div class="sketchpad-controls">
+                    <button onclick="clearSketchpad()">پاک کردن</button>
+                     <input type="color" id="sketchpad-color" value="#000000">
+                     <input type="range" id="sketchpad-thickness" min="1" max="10" value="4">
+                </div>
+            </div>
+            <textarea id="case-notes" placeholder="یادداشت‌های اضافی"></textarea>
+            <button onclick="saveCase()">ذخیره کیس</button>
+        </div>
+    </div>
+
+    <div id="view-item-modal" class="modal">
+      <div class="modal-content modal-content-large">
+        <span class="close-button" onclick="closeModal('view-item-modal')">&times;</span>
+        <h3 id="view-item-title"></h3>
+        <div id="view-item-body">
+          <!-- محتوای کتاب، مقاله، مفهوم یا کیس در اینجا نمایش داده می‌شود -->
+        </div>
+        <div id="view-item-notes">
+            <h4>یادداشت‌های من</h4>
+            <textarea placeholder="یادداشت خود را اضافه کنید..."></textarea>
+            <button>ذخیره یادداشت</button>
+        </div>
+         <div id="view-item-sketchpad-section" style="display:none;">
+            <h4>طراحی من</h4>
+            <canvas class="view-item-sketchpad"></canvas>
+             <div class="sketchpad-controls">
+                <button onclick="clearViewItemSketchpad()">پاک کردن</button>
+                 <input type="color" id="view-item-sketchpad-color" value="#000000">
+                 <input type="range" id="view-item-sketchpad-thickness" min="1" max="10" value="4">
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
