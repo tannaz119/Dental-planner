@@ -1,0 +1,22 @@
+    {
+      "name": "Dental Study Planner",
+      "short_name": "DentalPlan",
+      "description": "A PWA planner for dental students and professionals.",
+      "start_url": "/",
+      "display": "standalone",
+      "background_color": "#1e1e1e",
+      "theme_color": "#4CAF50",
+      "orientation": "portrait-primary",
+      "icons": [
+        {
+          "src": "icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "icons/icon-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    }
