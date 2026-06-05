@@ -1,112 +1,361 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dental Planner Pro</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dental Study Planner</title>
+
+<style>
+
+body{
+margin:0;
+font-family:system-ui;
+background:#0b0f14;
+color:#e6edf3;
+}
+
+header{
+padding:16px;
+font-size:20px;
+font-weight:600;
+border-bottom:1px solid #222;
+}
+
+nav{
+display:flex;
+gap:10px;
+padding:10px;
+border-bottom:1px solid #222;
+}
+
+nav button{
+background:#111;
+color:#ccc;
+border:1px solid #333;
+padding:8px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+nav button.active{
+background:#2c7be5;
+color:white;
+}
+
+.page{
+display:none;
+padding:16px;
+}
+
+.page.active{
+display:block;
+}
+
+.card{
+background:#121820;
+border:1px solid #222;
+border-radius:8px;
+padding:12px;
+margin-bottom:10px;
+}
+
+button.primary{
+background:#2c7be5;
+border:none;
+color:white;
+padding:8px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.6);
+display:none;
+align-items:center;
+justify-content:center;
+}
+
+.modal-content{
+background:#121820;
+padding:20px;
+border-radius:8px;
+width:300px;
+}
+
+input,textarea,select{
+width:100%;
+margin-bottom:10px;
+padding:6px;
+background:#0b0f14;
+color:white;
+border:1px solid #333;
+border-radius:4px;
+}
+
+</style>
 </head>
+
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="main-header">
-            <i class="fas fa-bars menu-icon"></i>
-            <h1 class="nav-title">Dashboard</h1>
-            <div class="notification-wrapper">
-                <i class="far fa-bell"></i>
-                <span class="dot"></span>
-            </div>
-        </header>
 
-        <!-- Welcome Section -->
-        <section class="welcome-section">
-            <div class="user-avatar">
-                <i class="fas fa-tooth"></i>
-            </div>
-            <div class="welcome-text">
-                <h2>Good evening, <span class="highlight">Dentist</span></h2>
-                <p>Stay consistent, finish strong.</p>
-            </div>
-        </section>
+<header>Dental Study Planner</header>
 
-        <!-- Top Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card glass">
-                <div class="stat-header">
-                    <i class="far fa-clock"></i>
-                    <span>STUDY TIME</span>
-                </div>
-                <div class="stat-value">2h <small>45m</small></div>
-                <div class="stat-footer">Today <span class="chart-mini">📊</span></div>
-            </div>
-            <div class="stat-card glass highlight-orange">
-                <div class="stat-header">
-                    <i class="fas fa-fire"></i>
-                    <span>STREAK</span>
-                </div>
-                <div class="stat-value">12 <small>days</small></div>
-                <div class="stat-footer">Keep it going!</div>
-                <i class="fas fa-fire big-icon-bg"></i>
-            </div>
-        </div>
+<nav>
+<button data-page="dashboard" class="active">Dashboard</button>
+<button data-page="planner">Planner</button>
+<button data-page="notes">Notes</button>
+<button data-page="cases">Cases</button>
+</nav>
 
-        <!-- Active Book Card -->
-        <div class="active-book-card glass">
-            <div class="book-cover">
-                <img src="https://via.placeholder.com/80x110" alt="Book Cover" id="current-book-img">
-            </div>
-            <div class="book-info">
-                <span class="label">ACTIVE BOOK</span>
-                <h3 id="book-title">Shillingburg</h3>
-                <p id="book-chapter">Finish Lines - Chapter 4</p>
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 65%;"></div>
-                </div>
-                <span class="progress-percent">65%</span>
-                <button class="btn-primary-sm"><i class="fas fa-book-open"></i> Continue Reading</button>
-            </div>
-        </div>
+<div id="dashboard" class="page active">
 
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <div class="action-item">
-                <div class="icon-circle bg-green"><i class="fas fa-play"></i></div>
-                <span>Start Study</span>
-                <small>Focus Mode</small>
-            </div>
-            <div class="action-item">
-                <div class="icon-circle bg-blue"><i class="fas fa-file-alt"></i></div>
-                <span>Add Note</span>
-                <small>Quick Note</small>
-            </div>
-            <div class="action-item">
-                <div class="icon-circle bg-purple"><i class="fas fa-tooth"></i></div>
-                <span>Add Case</span>
-                <small>Clinical Case</small>
-            </div>
-        </div>
+<div class="card">
+<strong>Study Streak</strong>
+<div id="streak">0 days</div>
+</div>
 
-        <!-- Today's Plan -->
-        <section class="plan-section">
-            <div class="section-header">
-                <h3><i class="far fa-calendar-check"></i> TODAY'S PLAN</h3>
-                <a href="#" class="view-all">View All</a>
-            </div>
-            <div class="task-list" id="task-list-container">
-                <!-- Tasks will be injected by JS -->
-            </div>
-        </section>
+<div class="card">
+<strong>Total Progress</strong>
+<div id="progress">0%</div>
+</div>
 
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <div class="nav-item active"><i class="fas fa-home"></i><span>Dashboard</span></div>
-            <div class="nav-item"><i class="fas fa-book"></i><span>Books</span></div>
-            <div class="nav-item"><i class="fas fa-edit"></i><span>Notes</span></div>
-            <div class="nav-item"><i class="fas fa-stethoscope"></i><span>Cases</span></div>
-            <div class="nav-item"><i class="fas fa-user"></i><span>Profile</span></div>
-        </nav>
-    </div>
-    <script src="script.js"></script>
+<button class="primary" onclick="openModal('noteModal')">New Note</button>
+<button class="primary" onclick="openModal('sessionModal')">Add Session</button>
+<button class="primary" onclick="openModal('caseModal')">Add Case</button>
+
+</div>
+
+<div id="planner" class="page">
+
+<h3>Study Sessions</h3>
+<div id="sessionList"></div>
+
+</div>
+
+<div id="notes" class="page">
+
+<h3>Notes</h3>
+<div id="notesList"></div>
+
+</div>
+
+<div id="cases" class="page">
+
+<h3>Clinical Cases</h3>
+<div id="caseList"></div>
+
+</div>
+
+
+<!-- NOTE MODAL -->
+
+<div id="noteModal" class="modal">
+<div class="modal-content">
+
+<h3>New Note</h3>
+
+<textarea id="noteText"></textarea>
+
+<button class="primary" onclick="saveNote()">Save</button>
+<button onclick="closeModal('noteModal')">Close</button>
+
+</div>
+</div>
+
+
+<!-- SESSION MODAL -->
+
+<div id="sessionModal" class="modal">
+<div class="modal-content">
+
+<h3>Add Session</h3>
+
+<input type="date" id="sessionDate">
+<input type="time" id="sessionTime">
+<input type="number" id="sessionDuration" placeholder="minutes">
+<input type="text" id="sessionTopic" placeholder="topic">
+
+<button class="primary" onclick="saveSession()">Save</button>
+<button onclick="closeModal('sessionModal')">Close</button>
+
+</div>
+</div>
+
+
+<!-- CASE MODAL -->
+
+<div id="caseModal" class="modal">
+<div class="modal-content">
+
+<h3>New Case</h3>
+
+<select id="caseType">
+<option>Fixed Prosthesis</option>
+<option>Implant Prosthesis</option>
+<option>TMD / Occlusion</option>
+<option>Other</option>
+</select>
+
+<button class="primary" onclick="saveCase()">Save</button>
+<button onclick="closeModal('caseModal')">Close</button>
+
+</div>
+</div>
+
+
+<script>
+
+const pages=document.querySelectorAll(".page")
+const navButtons=document.querySelectorAll("nav button")
+
+navButtons.forEach(btn=>{
+btn.onclick=()=>{
+pages.forEach(p=>p.classList.remove("active"))
+navButtons.forEach(b=>b.classList.remove("active"))
+document.getElementById(btn.dataset.page).classList.add("active")
+btn.classList.add("active")
+}
+})
+
+function openModal(id){
+document.getElementById(id).style.display="flex"
+}
+
+function closeModal(id){
+document.getElementById(id).style.display="none"
+}
+
+function getData(key){
+return JSON.parse(localStorage.getItem(key)||"[]")
+}
+
+function saveData(key,data){
+localStorage.setItem(key,JSON.stringify(data))
+}
+
+function saveNote(){
+
+const text=document.getElementById("noteText").value
+if(!text)return
+
+const notes=getData("notes")
+
+notes.push({
+id:Date.now(),
+text
+})
+
+saveData("notes",notes)
+
+document.getElementById("noteText").value=""
+
+closeModal("noteModal")
+
+renderNotes()
+
+}
+
+function renderNotes(){
+
+const notes=getData("notes")
+const list=document.getElementById("notesList")
+
+list.innerHTML=""
+
+notes.forEach(n=>{
+
+const el=document.createElement("div")
+el.className="card"
+el.textContent=n.text
+
+list.appendChild(el)
+
+})
+
+}
+
+function saveSession(){
+
+const sessions=getData("sessions")
+
+sessions.push({
+date:sessionDate.value,
+time:sessionTime.value,
+duration:sessionDuration.value,
+topic:sessionTopic.value
+})
+
+saveData("sessions",sessions)
+
+closeModal("sessionModal")
+
+renderSessions()
+
+}
+
+function renderSessions(){
+
+const sessions=getData("sessions")
+const list=document.getElementById("sessionList")
+
+list.innerHTML=""
+
+sessions.forEach(s=>{
+
+const el=document.createElement("div")
+el.className="card"
+
+el.innerHTML=
+"<strong>"+s.topic+"</strong><br>"+
+s.date+" "+s.time+" • "+s.duration+" min"
+
+list.appendChild(el)
+
+})
+
+}
+
+function saveCase(){
+
+const cases=getData("cases")
+
+cases.push({
+type:caseType.value
+})
+
+saveData("cases",cases)
+
+closeModal("caseModal")
+
+renderCases()
+
+}
+
+function renderCases(){
+
+const cases=getData("cases")
+const list=document.getElementById("caseList")
+
+list.innerHTML=""
+
+cases.forEach(c=>{
+
+const el=document.createElement("div")
+el.className="card"
+el.textContent=c.type
+
+list.appendChild(el)
+
+})
+
+}
+
+renderNotes()
+renderSessions()
+renderCases()
+
+</script>
+
 </body>
 </html>
