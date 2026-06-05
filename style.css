@@ -124,3 +124,22 @@ body {
 .nav-item { text-align: center; color: var(--text-dim); font-size: 0.65rem; transition: 0.3s; }
 .nav-item i { display: block; font-size: 1.2rem; margin-bottom: 5px; }
 .nav-item.active { color: var(--accent-teal); }
+
+
+
+
+
+.nav-item, .action-item, .btn-primary-sm, .check-circle {
+    cursor: pointer; /* نشانگر دست برای کلیک */
+    pointer-events: auto; /* اطمینان از دریافت رویداد کلیک */
+}
+
+.bottom-nav {
+    z-index: 9999; /* بالاتر از همه لایه‌ها باشد */
+}
+
+.task-card:active, .action-item:active {
+    transform: scale(0.95); /* افکت فشردن دکمه در آیفون */
+    transition: 0.1s;
+}
+
