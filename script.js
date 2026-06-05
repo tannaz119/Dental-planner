@@ -1,86 +1,223 @@
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("Dental Planner Pro: Interactivity Active");
-
-    // ۱. مدیریت منوی پایین (Navigation)
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        item.addEventListener('click', function() {
-            // حذف حالت فعال از بقیه
-            navItems.forEach(i => i.classList.remove('active'));
-            // فعال کردن آیتم کلیک شده
-            this.classList.add('active');
-            
-            // نمایش پیام تستی (بعداً اینجا صفحات عوض می‌شوند)
-            const pageName = this.querySelector('span').textContent;
-            console.log(`Navigating to: ${pageName}`);
-            
-            // افکت لرزش ملایم برای آیفون (Haptic Feedback simulation)
-            if (window.navigator.vibrate) window.navigator.vibrate(10);
-        });
-    });
-
-    // ۲. مدیریت اقدامات سریع (Quick Actions)
-    const actionItems = document.querySelectorAll('.action-item');
-    actionItems.forEach(action => {
-        action.addEventListener('click', function() {
-            const actionName = this.querySelector('span').textContent;
-            alert(`Opening: ${actionName}`); // فعلاً یک الرت برای تست
-        });
-    });
-
-    // ۳. مدیریت چک‌باکس تسک‌ها (تکمیل مطالعه)
-    const taskList = document.getElementById('task-list-container');
-    if (taskList) {
-        taskList.addEventListener('click', (e) => {
-            const checkCircle = e.target.closest('.check-circle');
-            if (checkCircle) {
-                const card = checkCircle.closest('.task-card');
-                checkCircle.style.background = checkCircle.style.background ? '' : 'var(--accent-teal)';
-                card.style.opacity = card.style.opacity === '0.5' ? '1' : '0.5';
-            }
-        });
-    }
-
-    // ۴. لود کردن داده‌ها (دیتای پیش‌فرض + تلاش برای JSON)
-    initApp();
+document.addEventListener("DOMContentLoaded", () => {
+    initNavigation();
+    initForms();
+    loadData();
 });
 
-async function initApp() {
-    const defaultTasks = [
-        { title: "Read: Ch. 4 Finish Lines", subtitle: "Shillingburg - Finish Lines", meta: "65%" },
-        { title: "Watch: Border Molding", subtitle: "Prosthodontic Procedures", meta: "30m" },
-        { title: "Review: Key Points", subtitle: "Quick Review", meta: "10m" }
-    ];
+/* ---------------- NAVIGATION ---------------- */
 
-    renderTasks(defaultTasks);
+function initNavigation() {
+    const pages = document.querySelectorAll(".page");
+    const navButtons = document.querySelectorAll("[data-page]");
 
-    try {
-        const response = await fetch('./assets/Study/Books/book_list.json');
-        if (response.ok) {
-            const data = await response.json();
-            if(data && data.length > 0) updateBookUI(data[0]);
-        }
-    } catch (err) {
-        console.log("Note: Running on default data. Upload JSON to populate real data.");
+    navButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+
+            const target = btn.dataset.page;
+
+            pages.forEach(p => p.style.display = "none");
+
+            const page = document.getElementById(target);
+            if (page) page.style.display = "block";
+
+            navButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+        });
+    });
+}
+
+/* ---------------- MODALS ---------------- */
+
+function openModal(id) {
+    document.getElementById(id).style.display = "flex";
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+document.addEventListener("click", e => {
+
+    if (e.target.dataset.open) {
+        openModal(e.target.dataset.open);
     }
+
+    if (e.target.dataset.close) {
+        closeModal(e.target.dataset.close);
+    }
+
+});
+
+/* ---------------- STORAGE ---------------- */
+
+function getData(key) {
+    return JSON.parse(localStorage.getItem(key)) || [];
 }
 
-function renderTasks(tasks) {
-    const container = document.getElementById('task-list-container');
-    if (!container) return;
-    container.innerHTML = tasks.map(task => `
-        <div class="task-card" style="cursor: pointer;">
-            <div class="check-circle"></div>
-            <div class="task-info">
-                <h4>${task.title}</h4>
-                <p>${task.subtitle}</p>
-            </div>
-            <div class="task-meta">${task.meta}</div>
-        </div>
-    `).join('');
+function saveData(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
 }
 
-function updateBookUI(book) {
-    const titleEl = document.getElementById('book-title');
-    if (titleEl) titleEl.textContent = book.title || "No Title";
+/* ---------------- NOTES ---------------- */
+
+function initForms() {
+
+    const noteForm = document.getElementById("noteForm");
+
+    if (noteForm) {
+
+        noteForm.addEventListener("submit", e => {
+            e.preventDefault();
+
+            const text = noteForm.querySelector("textarea").value;
+
+            const notes = getData("notes");
+
+            notes.push({
+                id: Date.now(),
+                text
+            });
+
+            saveData("notes", notes);
+
+            noteForm.reset();
+            closeModal("noteModal");
+
+            renderNotes();
+        });
+
+    }
+
+    const sessionForm = document.getElementById("sessionForm");
+
+    if (sessionForm) {
+
+        sessionForm.addEventListener("submit", e => {
+
+            e.preventDefault();
+
+            const date = sessionForm.querySelector("[name=date]").value;
+            const time = sessionForm.querySelector("[name=time]").value;
+            const duration = sessionForm.querySelector("[name=duration]").value;
+            const topic = sessionForm.querySelector("[name=topic]").value;
+
+            const sessions = getData("sessions");
+
+            sessions.push({
+                id: Date.now(),
+                date,
+                time,
+                duration,
+                topic
+            });
+
+            saveData("sessions", sessions);
+
+            sessionForm.reset();
+            closeModal("sessionModal");
+
+            renderSessions();
+        });
+    }
+
+    const caseForm = document.getElementById("caseForm");
+
+    if (caseForm) {
+
+        caseForm.addEventListener("submit", e => {
+
+            e.preventDefault();
+
+            const type = caseForm.querySelector("[name=type]").value;
+
+            const cases = getData("cases");
+
+            cases.push({
+                id: Date.now(),
+                type
+            });
+
+            saveData("cases", cases);
+
+            caseForm.reset();
+            closeModal("caseModal");
+
+            renderCases();
+        });
+    }
+
+}
+
+/* ---------------- RENDER ---------------- */
+
+function loadData() {
+    renderNotes();
+    renderSessions();
+    renderCases();
+}
+
+function renderNotes() {
+
+    const list = document.getElementById("notesList");
+    if (!list) return;
+
+    const notes = getData("notes");
+
+    list.innerHTML = "";
+
+    notes.forEach(n => {
+
+        const el = document.createElement("div");
+        el.className = "card";
+        el.textContent = n.text;
+
+        list.appendChild(el);
+    });
+
+}
+
+function renderSessions() {
+
+    const list = document.getElementById("sessionList");
+    if (!list) return;
+
+    const sessions = getData("sessions");
+
+    list.innerHTML = "";
+
+    sessions.forEach(s => {
+
+        const el = document.createElement("div");
+        el.className = "card";
+
+        el.innerHTML =
+            "<strong>" + s.topic + "</strong><br>" +
+            s.date + " " + s.time + " • " + s.duration + " min";
+
+        list.appendChild(el);
+
+    });
+
+}
+
+function renderCases() {
+
+    const list = document.getElementById("caseList");
+    if (!list) return;
+
+    const cases = getData("cases");
+
+    list.innerHTML = "";
+
+    cases.forEach(c => {
+
+        const el = document.createElement("div");
+        el.className = "card";
+        el.textContent = c.type;
+
+        list.appendChild(el);
+
+    });
+
 }
